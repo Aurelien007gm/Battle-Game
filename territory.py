@@ -6,7 +6,7 @@ class Territory:
     def __init__(self,**kwargs):
         self.name = kwargs.get("name") or "Plaine des abysses"
         self.id = kwargs.get("id") or 0
-        self.owner = 0 # 0 is for animals
+        self.owner =-1 # -1 is for animals
         self.troop = {"field":0,"navy":0,"para":0,"animals":0}
 
     
@@ -24,7 +24,7 @@ class Territory:
     
     def GetCompo(self,way,isAttack = False):
         compo = []
-        if(self.owner == 0):
+        if(self.owner == -1):
             nb = min(2,self.troop["animals"])
             for i in range(nb):
                 compo.append(["animals"])
@@ -39,6 +39,24 @@ class Territory:
                         compo.append(d[w])
                     remaining -= nb
             return(compo)
+        
+    def CanBattle(self,way,isAttack):
+        d = {2:"field",1:"navy",0:"para"}
+        if self.owner == -1:
+            nb = self.troop["animals"]
+        else:
+            nb = 0
+            for w in range(3):
+                if(w<= way or not isAttack):
+                    nb+= self.troop[d[w]]
+        return(nb>0)
+    
+    def Deploy(self,**kwargs):
+        for (kind,value) in kwargs:
+            self.troop[kind] +=value
+        return
+
+
 
 
 
