@@ -18,7 +18,9 @@ class AttackManager:
         defenderLoss = 0
 
         attackCards : list =attacker.DrawCards(nbAttacker)
+        attackCards.sort(key =lambda x: x.attack,reverse = True)
         defenseCards: list =defender.DrawCards(nbDefender)
+        defenseCards.sort(key= lambda x: x.defense,reverse = True)
         for card in attackCards:
             card.print()
         for card in defenseCards:
