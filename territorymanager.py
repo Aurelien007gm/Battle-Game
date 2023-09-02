@@ -54,7 +54,7 @@ class TerritoryManager:
         t0:int = kwargs["t0"]
         t1:int = kwargs["t1"]
         way:int = kwargs["way"]
-        compo: list = kwargs["compo"]
+        compo = kwargs["compo"]
         res = True
         if(self.territories[t0].owner != self.territories[t1].owner):
             res = False
@@ -62,6 +62,11 @@ class TerritoryManager:
             player = self.territories[t0].owner
             w = self.connectivity[player][t0][t1]
             res = (w >= way)
+
+        for key,value in compo.items():
+            if(self.territories[t0].troop[key]< value):
+                res = False
+
         return(res)
     
     
