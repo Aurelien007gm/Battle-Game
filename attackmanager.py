@@ -1,10 +1,11 @@
 from territory import Territory
-from debug import DEBUG
 
 class AttackManager:
+    DEBUG = True
 
 
     def Wave(self,**kwargs):
+        DEBUG = True
         attacker : Territory = kwargs.get("attacker")
         defender : Territory = kwargs.get("defender")
         attackcompo : list = kwargs.get("attackcompo")
@@ -44,6 +45,7 @@ class AttackManager:
         return(kwargs)
 
     def Attack(self,**kwargs):
+        DEBUG = True
         attacker : Territory = kwargs.get("attacker")
         defender : Territory = kwargs.get("defender")
         way: int = kwargs.get("way")
@@ -59,6 +61,15 @@ class AttackManager:
             kwargs["defensecompo"] = defender.GetCompo(way,False)
             kwargs = self.Wave(**kwargs)
             iteration += 1
+        
+        if not defender.CanBattle(way,False):
+            defender.Conquest(**kwargs)
+            remaining = kwargs["attackcompo"][kwargs["attackerLoss"]:]
+            for r in remaining:
+                attacker.troop[r] -= 1
+                defender.troop[r] +=1
+            
+        
 
         if(DEBUG):
             attacker.print()
