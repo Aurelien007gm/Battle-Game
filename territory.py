@@ -12,6 +12,7 @@ class Territory:
         self.owner_name="None"
         self.troop = {"field":0,"navy":0,"para":0,"animals":0}
         self.value = kwargs.get("value") or 500
+        self.hasbeentaken = False
 
 
     
@@ -40,6 +41,9 @@ class Territory:
 
         else:
             remaining = 3 if isAttack else 2
+            if(isAttack):
+                maximum = self.CountTroop()-1
+                remaining = min(remaining,maximum)
             d = {2:"field",1:"navy",0:"para"}
             for w in range(2,-1,-1):
                 if(w <= way or not isAttack):
@@ -49,17 +53,30 @@ class Territory:
                     remaining -= nb
             return(compo)
         
-    def CanBattle(self,way,isAttack):
+    def CanBattle(self,way,isAttack = True):
         d = {2:"field",1:"navy",0:"para"}
+        globalCount = 0
+        if(self.hasbeentaken):
+            return(False)
         if self.owner_id == -1:
             nb = self.troop["animals"]
+            globalCount = nb
         else:
             nb = 0
             for w in range(3):
+                globalCount+= self.troop[d[w]]
                 if(w<= way or not isAttack):
                     nb+= self.troop[d[w]]
-            print(nb)
-        return(nb>0)
+
+        return(nb>0 and (globalCount>1 or not isAttack))
+    
+    def CountTroop(self):
+        d = {2:"field",1:"navy",0:"para"}
+        nb = 0
+            
+        for w in range(3):
+            nb+= self.troop[d[w]]
+        return(nb)
     
     def Deploy(self,**kwargs):
         for kind,value in kwargs.items():
@@ -73,6 +90,7 @@ class Territory:
 
     def Conquest(self,**kwargs):
         newOwner = kwargs.get("attacker").owner
+        self.hasbeentaken = True
         self.SetOwner(newOwner)
     
     def print(self):
@@ -80,6 +98,7 @@ class Territory:
         #print(self.troop)
 
     def EndTurn(self):
+        self.hasbeentaken = False
         return
 
 

@@ -2,11 +2,12 @@ import numpy as np
 
 class TerritoryManager:
 
-    def __init__(self):
-        self.territories = []
+    def __init__(self,**kwargs):
+        self.territories = kwargs.get("territories") or []
         self.nb_territory = len(self.territories)
         
-        self.adjacent = np.array((len(self.territories),len(self.territories)))
+        self.adjacent = np.zeros((len(self.territories),len(self.territories)))
+        print(self.adjacent)
         self.connectivity = {}
 
     def ComputeConnectedMatrix(self,player:int):
@@ -78,5 +79,6 @@ class TerritoryManager:
     def Add(self,t,compo):
         for key,value in compo.items():
             t.troop[key] -= value
+
     
 

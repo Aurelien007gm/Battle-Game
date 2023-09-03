@@ -2,19 +2,21 @@ from attackmanager import AttackManager
 from territorymanager import TerritoryManager
 from territory import Territory,TerritoryMultiple,TerritoryCard
 from player import Player
+import numpy as np
 import random as rd
 import pygame
 class CoreManager:
 
-    def __init__(self):
-        self.territory = []
-        self.players = []
-        self.players.append(Player(**{"name":"Arnaud","id":0}))
-        self.players.append(Player(**{"name":"Aurélien","id":1}))
+    def __init__(self,**kwargs):
+        self.territories = []
+        self.players = kwargs["players"] or []
+        ##self.players.append(Player(**{"name":"Arnaud","id":0}))
+        ##self.players.append(Player(**{"name":"Aurélien","id":1}))
         self.am = AttackManager()
         self.tm = TerritoryManager()
         self.INIT()
-
+        for p in self.players:
+            self.tm.SetConnectivity(p)
         self.actions = []
 
     def _Deploy(self,t:Territory,field,navy,para):
@@ -35,6 +37,7 @@ class CoreManager:
         t = self.tm.territories[territory]
         money = t.owner.money
         if(cost > money):
+            
             print("Attempted to buy to many troop")
             return
         self._Deploy(t,field,navy,para)
@@ -56,8 +59,11 @@ class CoreManager:
             print("Tried to attack from ally territories")
             return
         
+        adjacent = self.tm.adjacent[t0,t1]
+        
         way = self.tm.adjacent[t0,t1]
         if(not attacker.CanBattle(way)):
+            print("Territory has no troop to attack")
             return
         self._Attack(attacker,defender,way)
         return
@@ -117,7 +123,6 @@ class CoreManager:
 
     def INIT(self):
         t = []
-        fairness = 0
         for i in range(7):
             if(i== 3):
                 terr = TerritoryMultiple(**{"name": "Moutain "+str(i),"id": i})
@@ -125,24 +130,27 @@ class CoreManager:
                 terr = TerritoryCard(**{"name": "Volcano "+str(i),"id": i})
             else:
                 terr = Territory(**{"name": "Jungle "+str(i),"id": i})
-            terr.owner_id = rd.randint(0,1)
+            terr.owner_id = rd.randint(0,2)
             terr.owner = self.players[terr.owner_id] 
 
             
             field = rd.randint(1,5)
             terr.troop["field"] = field
-            fairness += (field*(terr.owner_id*2-1))
             t.append(terr)
-        if(abs(fairness) > 2):
-            return(self.INIT())
-        print(fairness)
         t[6].value = 1000
         t[6].name = "Desert 6"
-        self.tm.territories = t
+        self.tm = TerritoryManager(territories = t)
+        self.tm.adjacent = np.array([[2,1,0,0,1,0,0],
+                            [1,2,2,0,1,0,0],
+                            [0,2,2,2,0,2,0],
+                            [0,0,2,2,0,0,2],
+                            [1,1,0,0,2,2,0],
+                            [0,0,2,0,2,2,2],
+                            [0,0,0,2,0,2,2]])
 
     def print(self):
-        self.players[0].print()
-        self.players[1].print()
+        for p in self.players:
+            p.print()
 
         for t in self.tm.territories:
             t.print()
@@ -158,6 +166,16 @@ class CoreManager:
             func(**action.args)
         self.actions = []
         self.EndTurn()
+        for p in self.players:
+            self.tm.SetConnectivity(p)
+
+    def GetTerritory(self,p:int):
+        terr = []
+        for t in self.tm.territories:
+            if(t.owner_id == p):
+                terr.append(t)
+
+        return(terr)
 
 
 

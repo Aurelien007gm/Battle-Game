@@ -9,5 +9,9 @@ class Action:
         dictionnary = {"Deploy":1,"Discard":1,"Transfer":2,"Attack":3}
         get = dictionnary.get(self.name) or 5
         return(get)
+    
+    def print(self):
+        print(self.name)
+        print(self.args)
 
     

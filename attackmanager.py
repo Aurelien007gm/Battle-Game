@@ -52,6 +52,8 @@ class AttackManager:
 
         maxIter: int = 10
         iteration = 0
+        if(defender.hasbeentaken or attacker.hasbeentaken):
+            return
         while attacker.CanBattle(way,True) and defender.CanBattle(way,False) and iteration  <maxIter:
             if(DEBUG):
                 attacker.print()
