@@ -111,7 +111,7 @@ class TerritoryMultiple(Territory):
             self.value = 500
 
         def EndTurn(self):
-            self.value = int(self.value*1.3)
+            self.value = int(self.value*1.1)
 
 class TerritoryCard(Territory):
         def __init__(self,**kwargs):

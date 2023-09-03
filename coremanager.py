@@ -123,30 +123,43 @@ class CoreManager:
 
     def INIT(self):
         t = []
-        for i in range(7):
-            if(i== 3):
+        for i in range(12):
+            if(i== 11):
                 terr = TerritoryMultiple(**{"name": "Moutain "+str(i),"id": i})
-            elif(i==4):
+            elif(i==8):
                 terr = TerritoryCard(**{"name": "Volcano "+str(i),"id": i})
             else:
                 terr = Territory(**{"name": "Jungle "+str(i),"id": i})
-            terr.owner_id = rd.randint(0,2)
+            """terr.owner_id = rd.randint(0,2)
             terr.owner = self.players[terr.owner_id] 
 
             
             field = rd.randint(1,5)
-            terr.troop["field"] = field
+            terr.troop["field"] = field"""
             t.append(terr)
-        t[6].value = 1000
-        t[6].name = "Desert 6"
+        t[4].value = 1000
+        t[4].name = "Desert 4"
+        owners = [0,0,0,1,1,1,2,2,2,3,3,3]
+        rd.shuffle(owners)
+        for i in range(12):
+            t[i].owner_id = owners[i]
+            t[i].owner = self.players[owners[i]]
+            t[i].troop["field"] = 2
         self.tm = TerritoryManager(territories = t)
-        self.tm.adjacent = np.array([[2,1,0,0,1,0,0],
-                            [1,2,2,0,1,0,0],
-                            [0,2,2,2,0,2,0],
-                            [0,0,2,2,0,0,2],
-                            [1,1,0,0,2,2,0],
-                            [0,0,2,0,2,2,2],
-                            [0,0,0,2,0,2,2]])
+        self.tm.adjacent = np.array([[2,2,0,0,0,0,0,0,0,0,1,0],
+                                     [2,2,2,0,0,0,0,0,0,0,1,0],
+                                     [0,2,2,2,0,0,0,0,0,1,0,0],
+                                     [0,0,2,2,2,0,0,0,0,0,0,0],
+                                     [0,0,0,2,2,2,0,0,0,0,0,0],
+                                     [0,0,0,0,2,2,2,0,0,0,0,0],
+                                     [0,0,0,0,0,2,2,2,0,0,0,0],
+                                     [0,0,0,0,0,0,2,2,2,0,0,0],
+                                     [0,0,0,0,0,0,0,2,2,2,0,0],
+                                     [0,0,1,0,0,0,0,0,2,2,2,0],
+                                     [1,1,0,0,0,0,0,0,0,2,2,2],
+                                     [0,0,0,0,0,0,0,0,0,0,2,2]])
+        
+            
 
     def print(self):
         for p in self.players:

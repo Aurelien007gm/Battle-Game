@@ -6,9 +6,10 @@ class ActionManager:
     def __init__(self,bot = True):
         self.players = []
         self.bots =[]
-        self.players.append(Player(**{"name":"Arnaud","id":0}))
-        self.players.append(Player(**{"name":"Aurélien","id":1}))
-        self.players.append(Player(**{"name":"Bot","id":2}))
+        self.players.append(Player(**{"name":"Bot","id":0}))
+        self.players.append(Player(**{"name":"SuperBot","id":1}))
+        self.players.append(Player(**{"name":"UltraBot","id":2}))
+        self.players.append(Player(**{"name":"Aurélien","id":3}))
         for i in range(3):
             self.bots.append(Bot(self.players[i],None))
         kwargs = {"players":self.players}
