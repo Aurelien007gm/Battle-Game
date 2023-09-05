@@ -6,6 +6,7 @@ class Player:
         self.money = 5000
         self.name = kwargs.get("name") or "Unknown"
         self.id = kwargs.get("id") or 0
+        self.color = kwargs.get("color") or (127,127,127)
         self.cards = []
         for i in range(10):
             self.cards.append(Card())
@@ -43,6 +44,7 @@ class Animal(Player):
         self.name = "animals"
         self.id = -1
         self.cards = []
+        self.color = (200,200,100)
 
     def AddMoney(self,nb):
         return

@@ -5,6 +5,8 @@ from player import Player,Animal
 import numpy as np
 import random as rd
 import pygame
+
+from map import MAP
 class CoreManager:
 
     def __init__(self,**kwargs):
@@ -28,13 +30,18 @@ class CoreManager:
         owner.AddMoney(-price["para"]*para)
 
     def Deploy(self,**kwargs):
-        territory = kwargs.get("territory")
-        field = kwargs.get("field")
-        navy = kwargs.get("navy")
-        para = kwargs.get("para")
+        territory = kwargs.get("t0") or None
+        field = kwargs.get("field") or 0
+        navy = kwargs.get("navy") or 0
+        para = kwargs.get("para") or 0
+        if(not territory):
+            print("No territory to deploy")
+            return
+
         price = {"field": 1000,"navy":1200,"para":1500}
         cost = price["field"]*field + price["navy"]*navy + price["para"]*para
         t = self.tm.territories[territory]
+
         money = t.owner.money
         if(cost > money):
             
@@ -124,7 +131,7 @@ class CoreManager:
     def INIT(self):
         t = []
         animals = Animal()
-        for i in range(12):
+        for i in range(16):
             if(i== 11):
                 terr = TerritoryMultiple(**{"name": "Moutain "+str(i),"id": i,"animals":animals})
             elif(i==8):
@@ -140,26 +147,14 @@ class CoreManager:
             t.append(terr)
         t[4].value = 1000
         t[4].name = "Desert 4"
-        owners = [0,0,0,1,1,1,2,2,2,3,3,3]
+        owners = [0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3]
         rd.shuffle(owners)
-        for i in range(12):
+        for i in range(16):
             t[i].owner_id = owners[i]
             t[i].owner = self.players[owners[i]]
-            t[i].troop["field"] = 1
+            t[i].troop["field"] = 2
         self.tm = TerritoryManager(territories = t)
-        self.tm.adjacent = np.array([[2,2,0,0,0,0,0,0,0,0,1,0],
-                                     [2,2,2,0,0,0,0,0,0,0,1,0],
-                                     [0,2,2,2,0,0,0,0,0,1,0,0],
-                                     [0,0,2,2,2,0,0,0,0,0,0,0],
-                                     [0,0,0,2,2,2,0,0,0,0,0,0],
-                                     [0,0,0,0,2,2,2,0,0,0,0,0],
-                                     [0,0,0,0,0,2,2,2,0,0,0,0],
-                                     [0,0,0,0,0,0,2,2,2,0,0,0],
-                                     [0,0,0,0,0,0,0,2,2,2,0,0],
-                                     [0,0,1,0,0,0,0,0,2,2,2,0],
-                                     [1,1,0,0,0,0,0,0,0,2,2,2],
-                                     [0,0,0,0,0,0,0,0,0,0,2,2]])
-        
+        self.tm.adjacent = MAP
             
 
     def print(self):

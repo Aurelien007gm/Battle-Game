@@ -4,7 +4,7 @@ from action import Action
 import random as rd
 
 class Bot:
-    N_TERRITORY = 7
+    N_TERRITORY = 16
     def __init__(self,p:Player,cm:CoreManager):
         self.player = p
         self.cm = cm
@@ -18,7 +18,7 @@ class Bot:
         troopToDeploy = {"field": 0,"navy":0,"para":0}
         if(terr):
             randomterr = rd.choice(terr).id
-            troopToDeploy["territory"] = randomterr
+            troopToDeploy["t0"] = randomterr
             while(money > 1500):
                 ##troop,value = rd.choice(list(price.items()))
                 i = rd.randint(0,10)
