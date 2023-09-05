@@ -1,5 +1,6 @@
 from card import Card
-from player import Player
+from player import Player,Animal
+import random as rd
 class Territory:
 
 
@@ -7,6 +8,7 @@ class Territory:
     def __init__(self,**kwargs):
         self.name = kwargs.get("name") or "Plaine des abysses"
         self.id = kwargs.get("id") or 0
+        self.animals = kwargs.get("animals")
         self.owner = None
         self.owner_id =-1 # -1 is for animals
         self.owner_name="None"
@@ -29,15 +31,16 @@ class Territory:
     
     def LooseTroop(self,nb,compo):
         for i in range(nb):
+            print(compo[i])
             self.troop[compo[i]] -= 1
         return
     
     def GetCompo(self,way,isAttack = False):
         compo = []
         if(self.owner_id == -1):
-            nb = min(2,self.troop["animals"])
+            nb = self.troop["animals"]
             for i in range(nb):
-                compo.append(["animals"])
+                compo.append("animals")
 
         else:
             remaining = 3 if isAttack else 2
@@ -51,7 +54,7 @@ class Territory:
                     for i in range(nb):
                         compo.append(d[w])
                     remaining -= nb
-            return(compo)
+        return(compo)
         
     def CanBattle(self,way,isAttack = True):
         d = {2:"field",1:"navy",0:"para"}
@@ -71,10 +74,10 @@ class Territory:
         return(nb>0 and (globalCount>1 or not isAttack))
     
     def CountTroop(self):
-        d = {2:"field",1:"navy",0:"para"}
+        d = {2:"field",1:"navy",0:"para",-1:"animals"}
         nb = 0
             
-        for w in range(3):
+        for w in range(-1,3):
             nb+= self.troop[d[w]]
         return(nb)
     
@@ -99,25 +102,41 @@ class Territory:
 
     def EndTurn(self):
         self.hasbeentaken = False
+        if(self.owner_id != -1 and self.CountTroop() <= 1):
+            if(rd.random() < 0.15):
+                self.Uprise()
+        elif(self.owner_id == -1):
+            self.Regenerate()
         return
 
+    def Uprise(self):
+        print("Uprise of the animals on territory" + self.name)
+        self.owner = self.animals
+        self.owner_id = -1
+        self.owner_name = "animals"
+        self.troop = {"field":0,"navy":0,"para":0,"animals":3}
+
+    def Regenerate(self):
+        self.troop = {"field":0,"navy":0,"para":0,"animals":3}
 
 class TerritoryMultiple(Territory):
         def __init__(self,**kwargs):
             super().__init__(**kwargs)
 
         def SetOwner(self,p:Player):
-            super.SetOwner(p)
+            super().SetOwner(p)
             self.value = 500
 
         def EndTurn(self):
             self.value = int(self.value*1.1)
+            super().EndTurn()
 
 class TerritoryCard(Territory):
         def __init__(self,**kwargs):
             super().__init__(**kwargs)
 
         def EndTurn(self):
+            super().EndTurn()
             self.owner.DiscardCard()
         
 

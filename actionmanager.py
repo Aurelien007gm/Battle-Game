@@ -8,13 +8,13 @@ class ActionManager:
         self.bots =[]
         self.players.append(Player(**{"name":"Bot","id":0}))
         self.players.append(Player(**{"name":"SuperBot","id":1}))
-        self.players.append(Player(**{"name":"UltraBot","id":2}))
+        self.players.append(Player(**{"name":"Arnaud","id":2}))
         self.players.append(Player(**{"name":"Aurélien","id":3}))
-        for i in range(3):
+        for i in range(2):
             self.bots.append(Bot(self.players[i],None))
         kwargs = {"players":self.players}
         self.cm = CoreManager(**kwargs)
-        for i in range(3):
+        for i in range(2):
             self.bots[i].cm = self.cm
         
 

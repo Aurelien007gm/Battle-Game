@@ -35,3 +35,23 @@ class Player:
         self.cards[i] = Card()
         self.cards.sort(key=lambda t:t.attack + t.defense)
         return(card)
+    
+class Animal(Player):
+
+    def __init__(self,**kwargs):
+        self.money = 0
+        self.name = "animals"
+        self.id = -1
+        self.cards = []
+
+    def AddMoney(self,nb):
+        return
+
+    def print(self):
+        print("Animals")
+
+    def DiscardCard(self,cost = None):
+        return
+
+    def DrawCard(self):
+        return(Card())

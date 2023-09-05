@@ -20,7 +20,15 @@ class Bot:
             randomterr = rd.choice(terr).id
             troopToDeploy["territory"] = randomterr
             while(money > 1500):
-                troop,value = rd.choice(list(price.items()))
+                ##troop,value = rd.choice(list(price.items()))
+                i = rd.randint(0,10)
+                if(i <= 5):
+                    troop,value = "field",1000
+                elif(i<=8):
+                    troop,value = "navy", 1200
+                else:
+                    troop,value = "para",1500
+
                 troopToDeploy[troop] += 1
                 money-= value
 

@@ -1,7 +1,7 @@
 from attackmanager import AttackManager
 from territorymanager import TerritoryManager
 from territory import Territory,TerritoryMultiple,TerritoryCard
-from player import Player
+from player import Player,Animal
 import numpy as np
 import random as rd
 import pygame
@@ -106,12 +106,12 @@ class CoreManager:
     def DiscardCard(self,**kwargs):
         player = kwargs.get("player")
         cost = 100
-        p = self.player[p]
-        money = p.owner.money
+        p = self.players[player]
+        money = p.money
         if(cost > money):
             print("Attempted to buy to discard card while not enough money")
             return
-        self._DiscardCard(p)
+        self._DiscardCard(player)
 
     def EndTurn(self):
         for t in self.tm.territories:
@@ -123,13 +123,14 @@ class CoreManager:
 
     def INIT(self):
         t = []
+        animals = Animal()
         for i in range(12):
             if(i== 11):
-                terr = TerritoryMultiple(**{"name": "Moutain "+str(i),"id": i})
+                terr = TerritoryMultiple(**{"name": "Moutain "+str(i),"id": i,"animals":animals})
             elif(i==8):
-                terr = TerritoryCard(**{"name": "Volcano "+str(i),"id": i})
+                terr = TerritoryCard(**{"name": "Volcano "+str(i),"id": i,"animals":animals})
             else:
-                terr = Territory(**{"name": "Jungle "+str(i),"id": i})
+                terr = Territory(**{"name": "Jungle "+str(i),"id": i,"animals":animals})
             """terr.owner_id = rd.randint(0,2)
             terr.owner = self.players[terr.owner_id] 
 
@@ -144,7 +145,7 @@ class CoreManager:
         for i in range(12):
             t[i].owner_id = owners[i]
             t[i].owner = self.players[owners[i]]
-            t[i].troop["field"] = 2
+            t[i].troop["field"] = 1
         self.tm = TerritoryManager(territories = t)
         self.tm.adjacent = np.array([[2,2,0,0,0,0,0,0,0,0,1,0],
                                      [2,2,2,0,0,0,0,0,0,0,1,0],
