@@ -41,7 +41,7 @@ class ActionHandler:
         elif(arg =="Player4"):
             self.player = 3
         elif(isinstance(arg,int)):
-            if(self.t0):
+            if(not self.t0 is None):
                 self.t1 = arg
             else:
                 self.t0 = arg

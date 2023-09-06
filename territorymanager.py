@@ -1,9 +1,11 @@
 import numpy as np
+from continent import Continent
 
 class TerritoryManager:
 
     def __init__(self,**kwargs):
         self.territories = kwargs.get("territories") or []
+        self.continent = Continent(tm = self)
         self.nb_territory = len(self.territories)
         
         self.adjacent = np.zeros((len(self.territories),len(self.territories)))

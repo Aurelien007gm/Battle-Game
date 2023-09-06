@@ -34,7 +34,7 @@ class CoreManager:
         field = kwargs.get("field") or 0
         navy = kwargs.get("navy") or 0
         para = kwargs.get("para") or 0
-        if(not territory):
+        if(territory is None):
             print("No territory to deploy")
             return
 
@@ -128,6 +128,8 @@ class CoreManager:
             owner.AddMoney(reward)
             t.EndTurn()
 
+        self.tm.continent.Reward()
+
     def INIT(self):
         t = []
         animals = Animal()
@@ -147,6 +149,8 @@ class CoreManager:
             t.append(terr)
         t[4].value = 1000
         t[4].name = "Desert 4"
+        t[15].value = 1000
+        t[15].name = "Desert 15"
         owners = [0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3]
         rd.shuffle(owners)
         for i in range(16):

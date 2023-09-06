@@ -50,7 +50,7 @@ class AttackManager:
         defender : Territory = kwargs.get("defender")
         way: int = kwargs.get("way")
 
-        maxIter: int = 10
+        maxIter: int = 100
         iteration = 0
         if(defender.hasbeentaken or attacker.hasbeentaken):
             return

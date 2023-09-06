@@ -67,7 +67,7 @@ def main():
                 command = colorToAct.get((b,g,r))
                 print(command)
                 act = None
-                if(command):
+                if(not command is None):
                     if(command == "Run"):
                         am.Run()
                         am.print()
