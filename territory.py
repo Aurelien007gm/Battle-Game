@@ -15,7 +15,11 @@ class Territory:
         self.troop = {"field":0,"navy":0,"para":0,"animals":0}
         self.value = kwargs.get("value") or 500
         self.hasbeentaken = False
+        self.hasAttacked = False
+        self.effect = "This territory has no effect"
 
+    def ShowEffect(self):
+        print(self.effect)
 
     
     def DrawCards(self,nb):
@@ -120,24 +124,66 @@ class Territory:
         self.troop = {"field":0,"navy":0,"para":0,"animals":3}
 
 class TerritoryMultiple(Territory):
-        def __init__(self,**kwargs):
-            super().__init__(**kwargs)
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.effect ="Reward is multiplied by 1.05 each turn. Reset when owner changes"
+      
+    def SetOwner(self,p:Player):
+        super().SetOwner(p)
+        self.value = 500
 
-        def SetOwner(self,p:Player):
-            super().SetOwner(p)
-            self.value = 500
-
-        def EndTurn(self):
-            self.value = int(self.value*1.1)
-            super().EndTurn()
+    def EndTurn(self):
+        self.value = int(self.value*1.05)
+        super().EndTurn()
 
 class TerritoryCard(Territory):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.effect ="Discard the worst card of the owner and draw another card each turn"
+
+    def EndTurn(self):
+        super().EndTurn()
+        self.owner.DiscardCard()
+        
+class TerritoryGorilla(Territory):
+
         def __init__(self,**kwargs):
             super().__init__(**kwargs)
-
+            self.effect ="If no attack from this territory, 20percent of adding a bonus troop at the end of the turn"
+        
         def EndTurn(self):
+            print("Bonus troop on gorilla territory")
+            if(not self.hasAttacked and rd.random()< 0.2 and self.owner !=-1):
+                self.Deploy(field = 1)
             super().EndTurn()
-            self.owner.DiscardCard()
-        
 
+class TerritoryAlpaga(Territory):
+
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.effect ="No uprise of animals on this territory"
         
+    def EndTurn(self):
+        return
+        
+class TerritoryCoati(Territory):
+
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.effect ="Uprise can happens if troop are less or equal to 4"
+        
+    def EndTurn(self):
+        self.hasbeentaken = False
+        if(self.owner_id != -1 and self.CountTroop() <= 4):
+            if(rd.random() < 0.15):
+                self.Uprise()
+        elif(self.owner_id == -1):
+            self.Regenerate()
+        return
+
+class TerritoryYack(Territory):
+
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.value = 1000
+        self.effect ="Reward is twice the normal price"

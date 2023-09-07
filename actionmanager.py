@@ -1,5 +1,5 @@
 from coremanager import CoreManager
-from bot import Bot
+from bot import Bot, CleverBot
 from action import Action
 from player import Player
 class ActionManager:
@@ -10,8 +10,11 @@ class ActionManager:
         self.players.append(Player(**{"name":"SuperBot","id":1,"color":(0,255,0)}))
         self.players.append(Player(**{"name":"ArnaudBot","id":2,"color":(255,0,0)}))
         self.players.append(Player(**{"name":"Aurélien","id":3,"color":(255,255,0)}))
-        for i in range(3):
+        for i in range(2):
             self.bots.append(Bot(self.players[i],None))
+        self.bots.append(CleverBot(self.players[2],None))
+        
+
         kwargs = {"players":self.players}
         self.cm = CoreManager(**kwargs)
         for bot in self.bots:

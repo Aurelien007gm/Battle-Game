@@ -1,6 +1,6 @@
 from attackmanager import AttackManager
 from territorymanager import TerritoryManager
-from territory import Territory,TerritoryMultiple,TerritoryCard
+from territory import (Territory,TerritoryMultiple,TerritoryCard,TerritoryGorilla,TerritoryAlpaga,TerritoryCoati,TerritoryYack)
 from player import Player,Animal
 import numpy as np
 import random as rd
@@ -30,7 +30,7 @@ class CoreManager:
         owner.AddMoney(-price["para"]*para)
 
     def Deploy(self,**kwargs):
-        territory = kwargs.get("t0") or None
+        territory = kwargs.get("t0")
         field = kwargs.get("field") or 0
         navy = kwargs.get("navy") or 0
         para = kwargs.get("para") or 0
@@ -135,9 +135,17 @@ class CoreManager:
         animals = Animal()
         for i in range(16):
             if(i== 11):
-                terr = TerritoryMultiple(**{"name": "Moutain "+str(i),"id": i,"animals":animals})
+                terr = TerritoryMultiple(**{"name": "Territoire des arbres centenaires "+str(i),"id": i,"animals":animals})
             elif(i==8):
-                terr = TerritoryCard(**{"name": "Volcano "+str(i),"id": i,"animals":animals})
+                terr = TerritoryCard(**{"name": "Territoire de la nuit sans fin "+str(i),"id": i,"animals":animals})
+            elif(i==15):
+                terr = TerritoryGorilla(**{"name": "Territoire de la jungle sauvage "+str(i),"id": i,"animals":animals})
+            elif(i==9):
+                terr = TerritoryAlpaga(**{"name": "Territoire du vaste Salar "+str(i),"id": i,"animals":animals})
+            elif(i==6):
+                terr = TerritoryCoati(**{"name": "Territoire du vaste Salar "+str(i),"id": i,"animals":animals})
+            elif(i==4):
+                terr = TerritoryYack(**{"name": "Territoire des collines verdiyante "+str(i),"id": i,"animals":animals})
             else:
                 terr = Territory(**{"name": "Jungle "+str(i),"id": i,"animals":animals})
             """terr.owner_id = rd.randint(0,2)
@@ -147,10 +155,6 @@ class CoreManager:
             field = rd.randint(1,5)
             terr.troop["field"] = field"""
             t.append(terr)
-        t[4].value = 1000
-        t[4].name = "Desert 4"
-        t[15].value = 1000
-        t[15].name = "Desert 15"
         owners = [0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3]
         rd.shuffle(owners)
         for i in range(16):

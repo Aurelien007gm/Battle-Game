@@ -31,6 +31,7 @@ def main():
     colorToAct[(0,255,0)] = "Player2"
     colorToAct[(0,0,255)] = "Player3"
     colorToAct[(0,255,255)] = "Player4"
+    colorToAct[(100,0,0)] = "Effect"
     actHandler = ActionHandler()
     am = ActionManager()
     am.print()
@@ -45,7 +46,7 @@ def main():
 	help="path to the input image")
     args = vars(ap.parse_args())
     image = cv2.imread(args["image"])
-
+    effect = False
 
     while running:  
         color = (255, 0, 0)
@@ -71,6 +72,12 @@ def main():
                     if(command == "Run"):
                         am.Run()
                         am.print()
+                    elif(command == "Effect"):
+                        effect = True
+                    elif(isinstance(command,int) and effect):
+                        effect = False
+                        am.cm.tm.territories[command].ShowEffect()
+
                     else:
                         act = actHandler.Add(command)
                 if(act):

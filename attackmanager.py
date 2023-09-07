@@ -58,7 +58,7 @@ class AttackManager:
             if(DEBUG):
                 attacker.print()
                 defender.print()
-
+            attacker.hasAttacked = True
             kwargs["attackcompo"] = attacker.GetCompo(way,True)
             kwargs["defensecompo"] = defender.GetCompo(way,False)
             kwargs = self.Wave(**kwargs)
