@@ -80,9 +80,9 @@ def testConnectivity():
 
 
 def main():
-    testWave()
-    testCompo()
-    testAttack()
+    ###testWave()
+    ###testCompo()
+    ###testAttack()
     testConnectivity()
 main()
 

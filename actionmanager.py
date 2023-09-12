@@ -8,7 +8,7 @@ class ActionManager:
         self.bots =[]
         self.players.append(Player(**{"name":"Bot","id":0,"color":(0,0,255)}))
         self.players.append(Player(**{"name":"SuperBot","id":1,"color":(0,255,0)}))
-        self.players.append(Player(**{"name":"ArnaudBot","id":2,"color":(255,0,0)}))
+        self.players.append(Player(**{"name":"Ultrabot","id":2,"color":(255,0,0)}))
         self.players.append(Player(**{"name":"Aurélien","id":3,"color":(255,255,0)}))
         for i in range(2):
             self.bots.append(Bot(self.players[i],None))

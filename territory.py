@@ -17,6 +17,21 @@ class Territory:
         self.hasbeentaken = False
         self.hasAttacked = False
         self.effect = "This territory has no effect"
+        self.maxTroopAttack = 3
+        self.baseMaxTroopAttack = 3
+        self.baseMaxTroopDefense = 2
+        self.maxTroopDefense = 2
+    
+    def SetMaxTroop(self, hasContinent = False):
+        self.maxTroopAttack = self.baseMaxTroopAttack
+        self.maxTroopDefense = self.baseMaxTroopDefense
+        print("???")
+        if(hasContinent):
+            self.maxTroopDefense += 1
+            print("Hey, someone have this continent")
+        else:
+            print("No one has this continent")
+        return
 
     def ShowEffect(self):
         print(self.effect)
@@ -42,12 +57,12 @@ class Territory:
     def GetCompo(self,way,isAttack = False):
         compo = []
         if(self.owner_id == -1):
-            nb = self.troop["animals"]
+            nb = min(self.troop["animals"],2)
             for i in range(nb):
                 compo.append("animals")
 
         else:
-            remaining = 3 if isAttack else 2
+            remaining = self.ComputeMaxTroop(isAttack)
             if(isAttack):
                 maximum = self.CountTroop()-1
                 remaining = min(remaining,maximum)
@@ -59,6 +74,11 @@ class Territory:
                         compo.append(d[w])
                     remaining -= nb
         return(compo)
+    
+    def ComputeMaxTroop(self,isAttack):
+        remaining = self.maxTroopAttack if isAttack else self.maxTroopDefense
+        return(remaining)
+        
         
     def CanBattle(self,way,isAttack = True):
         d = {2:"field",1:"navy",0:"para"}
@@ -106,6 +126,8 @@ class Territory:
 
     def EndTurn(self):
         self.hasbeentaken = False
+        self.maxTroopAttack = 3
+        self.maxTroopDefense = 2
         if(self.owner_id != -1 and self.CountTroop() <= 1):
             if(rd.random() < 0.15):
                 self.Uprise()
@@ -164,6 +186,7 @@ class TerritoryAlpaga(Territory):
         self.effect ="No uprise of animals on this territory"
         
     def EndTurn(self):
+        self.hasbeentaken = False
         return
         
 class TerritoryCoati(Territory):
@@ -187,3 +210,17 @@ class TerritoryYack(Territory):
         super().__init__(**kwargs)
         self.value = 1000
         self.effect ="Reward is twice the normal price"
+
+class TerritoryElephant(Territory):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.effect ="35 percent to attack with one more card"
+
+    def SetMaxTroop(self, hasContinent = False):
+        super().SetMaxTroop(hasContinent)
+
+        if(rd.random() <= 0.35):
+            self.maxTroopAttack += 1 
+        return
+        
+

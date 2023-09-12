@@ -1,6 +1,7 @@
 from attackmanager import AttackManager
 from territorymanager import TerritoryManager
-from territory import (Territory,TerritoryMultiple,TerritoryCard,TerritoryGorilla,TerritoryAlpaga,TerritoryCoati,TerritoryYack)
+from territory import (Territory,TerritoryMultiple,TerritoryCard,TerritoryElephant,
+                       TerritoryGorilla,TerritoryAlpaga,TerritoryCoati,TerritoryYack)
 from player import Player,Animal
 import numpy as np
 import random as rd
@@ -20,6 +21,7 @@ class CoreManager:
         for p in self.players:
             self.tm.SetConnectivity(p)
         self.actions = []
+        self.am.continent = self.tm.continent
 
     def _Deploy(self,t:Territory,field,navy,para):
         owner = t.owner
@@ -146,6 +148,8 @@ class CoreManager:
                 terr = TerritoryCoati(**{"name": "Territoire du vaste Salar "+str(i),"id": i,"animals":animals})
             elif(i==4):
                 terr = TerritoryYack(**{"name": "Territoire des collines verdiyante "+str(i),"id": i,"animals":animals})
+            elif(i==2):
+                terr = TerritoryElephant(**{"name": "Territoire des volcants étincelants "+str(i),"id": i,"animals":animals})
             else:
                 terr = Territory(**{"name": "Jungle "+str(i),"id": i,"animals":animals})
             """terr.owner_id = rd.randint(0,2)
@@ -176,6 +180,7 @@ class CoreManager:
         self.actions.append(action)
 
     def Run(self):
+        rd.shuffle(self.actions)
         self.actions.sort(key = lambda t:t.value)
         action_dict = {"Attack":self.Attack,"Deploy":self.Deploy,"Transfer":self.Transfer,"DiscardCard":self.DiscardCard}
         for action in self.actions:

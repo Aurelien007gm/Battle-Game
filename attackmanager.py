@@ -3,6 +3,9 @@ from territory import Territory
 class AttackManager:
     DEBUG = True
 
+    def __init__(self):
+        self.tm = None
+
 
     def Wave(self,**kwargs):
         DEBUG = True
@@ -47,12 +50,17 @@ class AttackManager:
     def Attack(self,**kwargs):
         DEBUG = True
         attacker : Territory = kwargs.get("attacker")
+        attacker.SetMaxTroop()
         defender : Territory = kwargs.get("defender")
+        hasContinent = self.continent.HasContinent(defender.owner_id,defender.id)
+        print("Setting max troop")
+        defender.SetMaxTroop(hasContinent)
         way: int = kwargs.get("way")
 
         maxIter: int = 100
         iteration = 0
         if(defender.hasbeentaken or attacker.hasbeentaken):
+            print("One of the territory has been taken this turn")
             return
         while attacker.CanBattle(way,True) and defender.CanBattle(way,False) and iteration  <maxIter:
             if(DEBUG):
