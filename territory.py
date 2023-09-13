@@ -21,6 +21,13 @@ class Territory:
         self.baseMaxTroopAttack = 3
         self.baseMaxTroopDefense = 2
         self.maxTroopDefense = 2
+
+
+        self.eventProb = 0.1
+        self.eventReward = 1000
+        self.eventCountdown = 0
+        self.eventOn = False
+
     
     def SetMaxTroop(self, hasContinent = False):
         self.maxTroopAttack = self.baseMaxTroopAttack
@@ -120,8 +127,24 @@ class Territory:
         print("Territory " + self.name + " is owned by player number " +str(self.owner.name) + " and has :" + str(self.troop))
         #print(self.troop)
 
+    def HandleEvent(self):
+        if(self.eventOn):
+            self.eventCountdown -=1
+            if(self.eventCountdown <= 0):
+                self.owner.AddMoney(self.eventReward)
+                self.eventOn = False
+
+        elif(rd.random() < self.eventProb):
+            print("Event on territory" + self.name)
+            self.eventOn = True
+            self.eventCountdown = rd.randint(2,5)
+        
+        return
+
+
     def EndTurn(self):
         self.hasbeentaken = False
+        self.HandleEvent()
         if(self.owner_id != -1 and self.CountTroop() <= 1):
             if(rd.random() < 0.15):
                 self.Uprise()
@@ -216,5 +239,41 @@ class TerritoryElephant(Territory):
         if(rd.random() <= 0.35):
             self.maxTroopAttack += 1 
         return
+    
+class TerritoryZebra(Territory):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.effect ="50 percent to defend with one more card"
+
+    def SetMaxTroop(self, hasContinent = False):
+        super().SetMaxTroop(hasContinent)
+        if(rd.random() <= 0.5):
+            self.maxTroopDefense += 1 
+        return
+    
+class TerritoryChacal(Territory):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.eventProb *= 0.33333
+        self.effect ="Event are 3 times less likely on this territory"
+
+class TerritoryTapir(Territory):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.eventProb *= 0.2
+        self.effect ="Event are 5 times less likely on this territory"
+
+class TerritoryPenguin(Territory):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.eventProb *= 3
+        self.effect ="Event are 3 times more likely on this territory"
+
+class TerritoryTaipan(Territory):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.eventProb *= 5
+        self.effect ="Event are 5 times more likely on this territory"
+
         
 
