@@ -28,6 +28,11 @@ class Continent :
         c = self.continent_inverse[t]
         for t_id in self.continent[c]:
             terr = self.tm.territories[t_id]
-            if (terr.owner_id== player):
+            if (terr.owner_id!= player):
+                print(terr.id)
+                print(terr.owner_id)
+                print(player)
+
                 res = False
+                break
         return(res)

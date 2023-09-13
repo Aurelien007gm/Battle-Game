@@ -25,12 +25,8 @@ class Territory:
     def SetMaxTroop(self, hasContinent = False):
         self.maxTroopAttack = self.baseMaxTroopAttack
         self.maxTroopDefense = self.baseMaxTroopDefense
-        print("???")
         if(hasContinent):
             self.maxTroopDefense += 1
-            print("Hey, someone have this continent")
-        else:
-            print("No one has this continent")
         return
 
     def ShowEffect(self):
@@ -126,8 +122,6 @@ class Territory:
 
     def EndTurn(self):
         self.hasbeentaken = False
-        self.maxTroopAttack = 3
-        self.maxTroopDefense = 2
         if(self.owner_id != -1 and self.CountTroop() <= 1):
             if(rd.random() < 0.15):
                 self.Uprise()
