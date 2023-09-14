@@ -21,10 +21,13 @@ class Territory:
         self.baseMaxTroopAttack = 3
         self.baseMaxTroopDefense = 2
         self.maxTroopDefense = 2
+        self.maxAnimals = 3
+        self.minTroopForUprise = 1
+        self.upriseProbability = 0.15
 
 
-        self.eventProb = 0.1
-        self.eventReward = 1000
+        self.eventProb = 0.5
+        self.eventReward = 5000
         self.eventCountdown = 0
         self.eventOn = False
 
@@ -145,8 +148,8 @@ class Territory:
     def EndTurn(self):
         self.hasbeentaken = False
         self.HandleEvent()
-        if(self.owner_id != -1 and self.CountTroop() <= 1):
-            if(rd.random() < 0.15):
+        if(self.owner_id != -1 and self.CountTroop() <= self.minTroopForUprise):
+            if(rd.random() < self.upriseProbability):
                 self.Uprise()
         elif(self.owner_id == -1):
             self.Regenerate()
@@ -157,10 +160,20 @@ class Territory:
         self.owner = self.animals
         self.owner_id = -1
         self.owner_name = "animals"
-        self.troop = {"field":0,"navy":0,"para":0,"animals":3}
+        self.troop = {"field":0,"navy":0,"para":0,"animals":self.maxAnimals}
 
     def Regenerate(self):
-        self.troop = {"field":0,"navy":0,"para":0,"animals":3}
+        self.troop = {"field":0,"navy":0,"para":0,"animals":self.maxAnimals}
+
+    def CancelSpecial(self):
+        return(False)
+    
+    def Reward(self):
+        return(self.value)
+    
+    def BeginTurn(self):
+        #This method is called just after troop are deployed
+        return
 
 class TerritoryMultiple(Territory):
     def __init__(self,**kwargs):
@@ -188,7 +201,7 @@ class TerritoryGorilla(Territory):
 
         def __init__(self,**kwargs):
             super().__init__(**kwargs)
-            self.effect ="If no attack from this territory, 20percent of adding a bonus troop at the end of the turn"
+            self.effect ="If no attack from this territory, 20 percent of adding a bonus troop at the end of the turn"
         
         def EndTurn(self):
             print("Bonus troop on gorilla territory")
@@ -201,25 +214,14 @@ class TerritoryAlpaga(Territory):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
         self.effect ="No uprise of animals on this territory"
-        
-    def EndTurn(self):
-        self.hasbeentaken = False
-        return
+        self.upriseProbability = -1
         
 class TerritoryCoati(Territory):
 
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
         self.effect ="Uprise can happens if troop are less or equal to 4"
-        
-    def EndTurn(self):
-        self.hasbeentaken = False
-        if(self.owner_id != -1 and self.CountTroop() <= 4):
-            if(rd.random() < 0.15):
-                self.Uprise()
-        elif(self.owner_id == -1):
-            self.Regenerate()
-        return
+        self.minTroopForUprise = 4
 
 class TerritoryYack(Territory):
 
@@ -261,19 +263,65 @@ class TerritoryTapir(Territory):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
         self.eventProb *= 0.2
-        self.effect ="Event are 5 times less likely on this territory"
+        self.effect ="Event are 5 times less likely on this territory."
 
 class TerritoryPenguin(Territory):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
         self.eventProb *= 3
-        self.effect ="Event are 3 times more likely on this territory"
+        self.effect ="Event are 3 times more likely on this territory."
 
 class TerritoryTaipan(Territory):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
         self.eventProb *= 5
-        self.effect ="Event are 5 times more likely on this territory"
+        self.effect ="Event are 5 times more likely on this territory."
+
+class TerritoryCoq(Territory):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.eventReward *= 3
+        self.effect ="Reward for event on this territory are 3 times higher than normal."
+
+class TerritoryParesseux(Territory):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.maxAnimals = 5
+        self.effect ="Animals defends this territory at 5 instead of 3."
+
+class TerritoryLama(Territory):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.maxAnimals = 1
+        self.effect ="Animals defends this territory at 1 instead of 3."
+
+class TerritoryHyena(Territory):
+
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.effect ="15 percent of cancel incoming attack."
+
+    def CancelSpecial(self):
+        probCancel = 0.15
+        return(rd.random() < probCancel)
+    
+
+class TerritoryFennec(Territory):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.effectiveReward = self.value
+        self.effect ="Reward is double if at least 5 territory at the beginning of the turn"
+
+    def Begin(self):
+        count = self.CountTroop()
+        if count >= 5:
+            self.effectiveReward = 2* self.value
+        else:
+            self.effectiveReward = self.value
+        return
+    
+    def Reward(self):
+        return(self.effectiveReward)
 
         
 

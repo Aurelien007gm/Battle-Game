@@ -51,6 +51,11 @@ class CoreManager:
             return
         self._Deploy(t,field,navy,para)
 
+    def Begin(self):
+        for t in self.territories:
+            t.BeginTurn()
+        return
+
 
     def _Attack(self,t0:Territory,t1:Territory,way):
         self.am.Attack(**{"attacker":t0,"defender":t1,"way":way})
@@ -125,7 +130,7 @@ class CoreManager:
     def EndTurn(self):
         for t in self.tm.territories:
 
-            reward = t.value
+            reward = t.Reward()
             owner = t.owner
             owner.AddMoney(reward)
             t.EndTurn()
@@ -183,7 +188,13 @@ class CoreManager:
         rd.shuffle(self.actions)
         self.actions.sort(key = lambda t:t.value)
         action_dict = {"Attack":self.Attack,"Deploy":self.Deploy,"Transfer":self.Transfer,"DiscardCard":self.DiscardCard}
-        for action in self.actions:
+        for action in filter(lambda act: (act.name in ["Deploy","Transfer","DiscardCard"]),self.actions):
+            func = action_dict.get(action.name)
+            func(**action.args)
+
+        self.Begin()
+
+        for action in filter(lambda act: (act.name in ["Attack"]),self.actions):
             func = action_dict.get(action.name)
             func(**action.args)
         self.actions = []

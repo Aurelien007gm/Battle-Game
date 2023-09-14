@@ -62,6 +62,10 @@ class AttackManager:
         if(defender.hasbeentaken or attacker.hasbeentaken):
             print("One of the territory has been taken this turn")
             return
+        
+        if(defender.CancelSpecial()):
+            print("Attack was cancelled")
+            return
         while attacker.CanBattle(way,True) and defender.CanBattle(way,False) and iteration  <maxIter:
             if(DEBUG):
                 attacker.print()
