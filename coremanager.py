@@ -1,7 +1,10 @@
 from attackmanager import AttackManager
 from territorymanager import TerritoryManager
 from territory import (Territory,TerritoryMultiple,TerritoryCard,TerritoryElephant,
-                       TerritoryGorilla,TerritoryAlpaga,TerritoryCoati,TerritoryYack)
+                       TerritoryGorilla,TerritoryAlpaga,TerritoryCoati,TerritoryYack,
+                       TerritoryChacal,TerritoryLama,TerritoryCoq,TerritoryFennec,TerritoryHyena,
+                       TerritoryKoala,TerritoryMacaque,TerritoryParesseux,TerritoryPenguin,TerritoryTaipan,
+                       TerritoryTapir,TerritoryZebra)
 from player import Player,Animal
 import numpy as np
 import random as rd
@@ -17,11 +20,12 @@ class CoreManager:
         ##self.players.append(Player(**{"name":"Aurélien","id":1}))
         self.am = AttackManager()
         self.tm = TerritoryManager()
-        self.INIT()
+        self.INIT(**kwargs)
         for p in self.players:
             self.tm.SetConnectivity(p)
         self.actions = []
         self.am.continent = self.tm.continent
+        self.turn = 0
 
     def _Deploy(self,t:Territory,field,navy,para):
         owner = t.owner
@@ -129,17 +133,30 @@ class CoreManager:
 
     def EndTurn(self):
         for t in self.tm.territories:
+            t.BeforeEnd()
 
             reward = t.Reward()
             owner = t.owner
             owner.AddMoney(reward)
             t.EndTurn()
 
-        self.tm.continent.Reward()
+        #self.tm.continent.Reward()
 
-    def INIT(self):
+    """def BeginTurn(self):
+        self.turn += 1
+        if(self.turn == 1):
+            return
+        for t in self.tm.territories:
+
+            reward = t.Reward()
+            owner = t.owner
+            owner.AddMoney(reward)
+            t.EndTurn()"""
+
+    def INIT(self,**kwargs):
         t = []
         animals = Animal()
+        """
         for i in range(16):
             if(i== 11):
                 terr = TerritoryMultiple(**{"name": "Territoire des arbres centenaires "+str(i),"id": i,"animals":animals})
@@ -157,13 +174,25 @@ class CoreManager:
                 terr = TerritoryElephant(**{"name": "Territoire des volcants étincelants "+str(i),"id": i,"animals":animals})
             else:
                 terr = Territory(**{"name": "Jungle "+str(i),"id": i,"animals":animals})
-            """terr.owner_id = rd.randint(0,2)
-            terr.owner = self.players[terr.owner_id] 
-
-            
-            field = rd.randint(1,5)
-            terr.troop["field"] = field"""
-            t.append(terr)
+            t.append(terr)"""
+        
+        t.append(Territory(**{"name": "Jungle 0","id":0 ,"animals":animals}))
+        t.append(TerritoryLama(**{"name": "Jungle 1","id":1 ,"animals":animals}))
+        t.append(TerritoryMultiple(**{"name": "Jungle 2","id":2 ,"animals":animals}))
+        t.append(TerritoryCard(**{"name": "Jungle 3","id":3 ,"animals":animals}))
+        t.append(TerritoryGorilla(**{"name": "Jungle 4","id":4 ,"animals":animals}))
+        t.append(TerritoryAlpaga(**{"name": "Jungle 5","id":5 ,"animals":animals}))
+        t.append(TerritoryCoati(**{"name": "Jungle 6","id":6 ,"animals":animals}))
+        t.append(TerritoryYack(**{"name": "Jungle 7","id":7 ,"animals":animals}))
+        t.append(TerritoryElephant(**{"name": "Jungle 8","id":8 ,"animals":animals}))
+        t.append(TerritoryZebra(**{"name": "Jungle 9","id":9 ,"animals":animals}))
+        t.append(TerritoryChacal(**{"name": "Jungle 10","id":10 ,"animals":animals}))
+        t.append(TerritoryTapir(**{"name": "Jungle 11","id":11 ,"animals":animals}))
+        t.append(TerritoryPenguin(**{"name": "Jungle 12","id":12 ,"animals":animals}))
+        t.append(TerritoryTaipan(**{"name": "Jungle 13","id":13 ,"animals":animals}))
+        t.append(TerritoryCoq(**{"name": "Jungle 14","id":14 ,"animals":animals}))
+        t.append(TerritoryParesseux(**{"name": "Jungle 15","id":15 ,"animals":animals}))
+        
         owners = [0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3]
         rd.shuffle(owners)
         for i in range(16):
@@ -191,8 +220,6 @@ class CoreManager:
         for action in filter(lambda act: (act.name in ["Deploy","Transfer","DiscardCard"]),self.actions):
             func = action_dict.get(action.name)
             func(**action.args)
-
-        self.Begin()
 
         for action in filter(lambda act: (act.name in ["Attack"]),self.actions):
             func = action_dict.get(action.name)

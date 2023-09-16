@@ -26,8 +26,8 @@ class Territory:
         self.upriseProbability = 0.15
 
 
-        self.eventProb = 0.5
-        self.eventReward = 5000
+        self.eventProb = 0.01
+        self.eventReward = 6000
         self.eventCountdown = 0
         self.eventOn = False
 
@@ -134,6 +134,7 @@ class Territory:
         if(self.eventOn):
             self.eventCountdown -=1
             if(self.eventCountdown <= 0):
+                print(f"player {self.owner_name} received a reward for event")
                 self.owner.AddMoney(self.eventReward)
                 self.eventOn = False
 
@@ -172,7 +173,11 @@ class Territory:
         return(self.value)
     
     def BeginTurn(self):
-        #This method is called just after troop are deployed
+        #This method is called before money is given troop are deployed
+        return
+    
+    def BeforeEnd(self):
+        #This method is called right before turn ends
         return
 
 class TerritoryMultiple(Territory):
@@ -323,5 +328,44 @@ class TerritoryFennec(Territory):
     def Reward(self):
         return(self.effectiveReward)
 
+class TerritoryKoala(Territory):
+
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.upriseProbability = 0.5
+        self.effect ="50 percent of animal's uprise if this territory is only defended by a troop"
         
 
+class TerritoryMacaque(Territory):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.effectiveReward = self.value
+        self.effect ="No reward if less than 5 troop at the beginning of the turn"
+
+    def BeforeEnd(self):
+        count = self.CountTroop()
+        if count >= 5:
+            self.effectiveReward = self.value
+        else:
+            self.effectiveReward = 0
+        return
+    
+    def Reward(self):
+        return(self.effectiveReward)
+    
+class TerritoryMacaque(Territory):
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+        self.effectiveReward = self.value
+        self.effect ="Reward is double if at least 5 territory at the beginning of the turn"
+
+    def BeforeEnd(self):
+        count = self.CountTroop()
+        if count >= 5:
+            self.effectiveReward = self.value
+        else:
+            self.effectiveReward = 0
+        return
+    
+    def Reward(self):
+        return(self.effectiveReward)

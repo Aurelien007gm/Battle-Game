@@ -161,6 +161,14 @@ def main():
             score_surf = score_font.render(str(troop["animals"]), 1, col)
             surface.blit(score_surf, [pos[0]+35,pos[1]])
 
+            if(territory.eventOn):
+                score_font = pygame.font.Font(None, 20)
+                score_surf = score_font.render("Event!", 1, col)
+                surface.blit(score_surf, [pos[0],pos[1]+10])
+                score_surf = score_font.render(str(territory.eventCountdown), 1, col)
+                surface.blit(score_surf, [pos[0],pos[1]+20])
+
+
 
         pygame.display.flip()
 
