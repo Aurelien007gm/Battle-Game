@@ -140,6 +140,9 @@ class CoreManager:
             owner.AddMoney(reward)
             t.EndTurn()
 
+        for p in self.players:
+            p.EndTurn()
+
         #self.tm.continent.Reward()
 
     """def BeginTurn(self):
